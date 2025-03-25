@@ -11,6 +11,11 @@ swarm.on('connection', (conn, peerInfo) => {
   console.log('swarm connected to a new peer!');
   console.log('Peer connected to: ' + peerInfo.publicKey.toString('hex'));
   console.log('This Peer: ' + conn.publicKey.toString('hex'));
+
+  let chunks = [];
+  conn.on('data', (data) => {
+    console.log(`recieved message from ${peerInfo.publicKey.toString('hex')}: ${data.toString()}`);
+  });
 });
 
 swarm.on('update', () => {

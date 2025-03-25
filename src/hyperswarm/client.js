@@ -13,6 +13,9 @@ swarm.on('connection', (conn, peerInfo) => {
   joinedPeers.push(peerInfo.publicKey);
 
   console.log('This Peer: ' + conn.publicKey.toString('hex'));
+  process.stdin.forEach((data) => {
+    conn.write(data);
+  })
 });
 
 swarm.on('update', () => {
@@ -24,10 +27,10 @@ const discovery = swarm.join(Buffer.from(process.argv[2], 'hex'), {
   client: true
 });
 
-setTimeout(() => {
-  console.log("LEAVONG, BYE")
-  swarm.leavePeer(joinedPeers[0]);
-}, parseInt(process.argv[3]));
+// setTimeout(() => {
+//   console.log("LEAVONG, BYE")
+//   swarm.leavePeer(joinedPeers[0]);
+// }, parseInt(process.argv[3]));
 
 goodbye(() => discovery.destroy());
 

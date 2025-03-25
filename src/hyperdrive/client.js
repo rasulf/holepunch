@@ -9,26 +9,17 @@ async function connectToP2PService(driveKey) {
 
   console.log('Client connected to Hyperdrive: ' + drive.key.toString('hex'));
 
-  try {
-    const file = await drive.get("/text.txt");
-    if (file) {
-      console.log("File content:", file.toString());
-    } else {
-      console.log("File not found or empty.");
-    }
-  } catch (err) {
-    console.error("Error reading file:", err);
-  } finally {
-    drive.close();
-  }
+  const dir = await drive.readdir('/');
+  // console.log('Directory: ' + JSON.stringify(dir));
+  dir.on('data', async (fileName) => {
+    console.log("File name: " + fileName);
+    const file = await drive.get(fileName);
+    console.log("File content: ", file.toString());
+  });
+  
 }
 
-// Replace with the actual drive key from server.js
-const driveKeyFromSever = process.argv[2]; // Get the driveKey from command line arguments
 
-if (!driveKeyFromSever) {
-  console.error("Please provide the drive key as a command-line argument.");
-  process.exit(1);
-}
+const driveKeyFromSever = process.argv[2];
 
 connectToP2PService(driveKeyFromSever);

@@ -1,12 +1,9 @@
-import Hyperswarm from "hyperswarm";
 import Hyperdrive from "hyperdrive";
-import crypto from "hypercore-crypto";
 import goodbye from "graceful-goodbye";
 import Corestore from 'corestore';
 
 async function createP2PService() {
   const store = new Corestore('./storage');
-  const swarm = new Hyperswarm();
   const drive = new Hyperdrive(store);
   await drive.ready();
   console.log('Hyperdrive id: ' + drive.id);
@@ -14,12 +11,10 @@ async function createP2PService() {
   console.log('Hash of drive public key: ' + drive.discoveryKey.toString('hex'));
   console.log('version/modificastions: ' + drive.version);
 
-  setTimeout(async () => {
-    await drive.put("./text.txt", Buffer.from(new Date().toISOString()));
-    console.log("FLUSHED")
-    drive.close();
-    console.log('Hyperdrive hypercore public key: ' + drive.key.toString('hex'));
-  }, 2000);
+  await drive.put("./text1.txt", Buffer.from(new Date().toISOString()));
+  await drive.put("./text2.txt", Buffer.from(new Date().toLocaleDateString()));
+  await drive.del('./text.txt');
+  console.log('Hyperdrive hypercore public key: ' + drive.key.toString('hex'));  
 
   goodbye(() => {
     drive.close();
