@@ -1,28 +1,28 @@
-import DHT from 'hyperdht';
-import 'dotenv/config';
-import goodbye from "graceful-goodbye";
-import b4a from 'b4a';
+import express from 'express';
 
-const node = new DHT();
+const app = express();
+  app.get('', (req, res) => {
+    const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <script src="./index.js"></script>
+        <title>Holepunch</title>
+      </head>
+      <body>
+        <div>
+          <button id="list-drives">
+            List Drives
+          </button>
+        </div>
+      </body>
+    </html>
+    `;
+    res.status(200);
+    res.setHeader('Content-Type', 'text/html');
+    res.send(html);
+  });
 
-const server = node.createServer();
-
-server.on('connection', (socket) => {
-  console.log('Serber Connection')
-  console.log(socket);
-  process.stdin.pipe(socket).pipe(process.stdout);
-  // console.log('rempte public key', socket);
-});
-
-const keyPair = DHT.keyPair();
-
-server.on('listening', () => {
-  console.log('Serber Listineing')
-  console.log(`peer ${b4a.toString(keyPair.publicKey, 'hex')} is listening..`);
-})
-
-await server.listen(keyPair).then(() => {
-  console.log("Another listener callbbak");
-});
-
-goodbye(() => server.close());
+  app.listen(3000, () => {
+    console.log('listening');
+  });
